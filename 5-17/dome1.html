@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="app">
+		<p>{{ msg1 }}</p>
+		<hello-world></hello-world>
+	</div>
+
+	<script scr="vue.js"></script>
+	<script>
+		// 定义一个组件
+		Vue.component("hello-world",{
+			// 组件里面的 data 是一个函数 return 一个对象
+			data(){
+				return{
+
+				}
+			},
+			template: <div>
+				<h1>Hello world</h1>
+			</div>
+		})
+
+		new Vue({
+			el:"#app",
+			data:{
+				msg1:"Hello Vue",
+				msg2:"Hello Msg2"
+			},
+		})
+	</script>
+</body>
+</html>

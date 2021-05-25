@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<button>A</button>
+	<button>B</button>
+	<button>C</button>
+	<button>D</button>
+	<button>E</button>
+
+<script>
+	var o = document.getElementsByTagName('button')
+
+	for(let i=0;i<o.length;i++){
+		o[i].onclick = function(){
+			alert(i)
+		}
+	}
+
+
+	// var arr = Array.prototype.slice.call(o)
+	// console.log(arr)
+
+	// arr.forEach(function(v,k){
+	// 	v.addEventListener("click",function(){
+	// 		alert(k)
+	// 	})
+	// })
+</script>
+</body>
+</html>

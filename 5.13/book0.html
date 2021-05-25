@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>用户列表</title>
+  <style>
+    .grid {
+      margin: auto;
+      width: 530px;
+      text-align: center;
+    }
+
+    .grid table {
+      border-top: 1px solid #C2D89A;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .grid th,
+    td {
+      padding: 10;
+      border: 1px dashed #F3DCAB;
+      height: 35px;
+      line-height: 35px;
+    }
+
+    .grid th {
+      background-color: #F3DCAB;
+    }
+
+    .grid .book {
+      padding-bottom: 10px;
+      padding-top: 5px;
+      background-color: #F3DCAB;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="grid">
+      <div>
+        <h1>用户管理</h1>
+        <div class="book">
+          <div>
+            <label for="id">
+              UID：
+            </label>
+            <input type="text" id="id" v-model="userid" v-bind:disabled="status">
+            <label for="name">
+              用户名：
+            </label>
+            <input type="text" id="name" v-model="username">
+            <button v-on:click.prevent="add">提交</button>
+          </div>
+        </div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>UID</th>
+            <th>用户名</th>
+            <th>邮箱</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item,k) in list" :key="item.user_id">
+            <td>{{item.user_id}}</td>
+            <td>{{item.user_name}}</td>
+            <td>{{item.email}}</td>
+            <td>
+              <a href="" v-on:click.prevent="update(k)">修改</a>
+              <span>|</span>
+              <a href="" v-on:click.prevent="del(k)">删除</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+
+</html>
+<script src="./vue.js"></script>
+<script src="./axios.min.js"></script>
+<script>
+  new Vue({
+    el: "#app",
+    data: {
+      status: false,
+      list: [],
+      userid: null,
+      username: null,
+    },
+    methods: {
+      // 添加数据
+
+      add() {
+        let self = this      
+        // 获取当前时间
+        let now = new Date()
+        let year = now.getFullYear()
+        let month = now.getMonth() + 1
+        let day = now.getDate()
+        let times = `${year}-${month}-${day}`
+
+        // 判断添加还是修改
+        if (this.status) {  //当disabled为true的时候 是修改数据
+          let user_info = {
+            user_id : this.userid,
+            user_name : this.username
+          }
+          let id = this.userid
+          let name = this.username
+          axios.put(`http://localhost:3001/user/update`,user_info).then(function(res){
+            // 遍历找到要修改的id
+          self.list.forEach(function (v, k) {
+            console.log(v);
+            if (v.user_id == id) {
+                v.user_name = name
+            }
+          });
+            self.userid = "",
+            self.username = "",
+            self.status = false
+          })
+      
+        } else {
+          // 获取input框里的值
+          let user_info = {
+            user_id : this.userid,
+            user_name : this.username
+          }
+          axios.post("http://localhost:3001/user/add",user_info).then(function(res){
+            self.list.unshift(user_info)
+            self.userid = null,
+            self.username = null
+          })
+        }
+      },
+        // 删除用户
+       del(k) {
+        // console.log(k);
+        let uid = this.list[k].user_id
+        let self = this
+        // 请求数据接口
+        axios.delete(`http://localhost:3001/user/delete?uid=${uid}`).then(function(res){
+           self.list.splice(k, 1)
+        })
+      },
+      // 编辑数据
+      update(k) {
+        this.userid =this.list[k].user_id
+        this.username = this.list[k].user_name
+        // 禁止修改id
+        this.status = true
+      },
+    },
+    created() {
+      // console.log(this.list);
+      let self = this
+      let api_url = "http://localhost:3001/user/list";
+      axios.get(api_url).then(function (res) {
+        self.list = res.data
+      })
+    }
+  })
+</script>

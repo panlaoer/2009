@@ -1,0 +1,1 @@
+var configData = {"isGooglePage":true,"translatedStrings":{"attributionIntro":"涓婚鑳屾櫙鍒涘缓鑰咃細","removeThumbnailTooltip":"涓嶈鍦ㄦ湰椤典笂鏄剧ず","restoreThumbnailsShort":"鍏ㄩ儴鎭㈠","searchboxPlaceholder":"鎼滅储Google鎴栬緭鍏ョ綉鍧€","thumbnailRemovedNotification":"宸插垹闄ょ缉鐣ュ浘銆�","title":"鎵撳紑鏂扮殑鏍囩椤�","undoThumbnailRemove":"鎾ゆ秷"},"useIcons":false};

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<script>
+	function ajax(o){
+		//第一步：创建AJAX对象
+		var xhr;
+		if(window.XMLHttpRequest){
+			xhr = new XMLHttpRequest(); //标准模式
+		}else{
+			xhr = new ActiveXObject("Microsoft.XMLHTTP") //IE6
+		}
+		//和服务器建立连接
+		if(o.method.toLowerCase()=="get"){ //如果是get请求方式
+			if(o.data){  //如果有发送数据
+				o.url= o.url + "?random=" + Math.random() + "&" + urlParmsHandler(o.data);
+				xhr.open("get",o.url,o.isAsync)
+			}else{
+				o.url = o.url + "?random=" + Math.random();
+				xhr.open("get",o.url,o.isAsync)
+			}
+			///xhr.open(“get”,,true);
+			//发送请求
+			xhr.send();
+		}else{    //如果是post请求
+			xhr.open("post",o.url,o.isAsync);
+			xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded'); //模拟表单提交
+			//发送请求
+			xhr.send(urlParmsHandler(o.data));
+		}
+		//是否是异步
+		if(o.isAsync){
+			//注册状态监听事件
+			xhr.onreadystatechange = function(){
+				responsetHandler();
+			}
+		}else{
+			responsetHandler();
+		}
+		
+		/*处理响应*/
+		function responsetHandler(){
+			if(xhr.readyState==4){   //读取完成（并不是成功）
+				if(xhr.status==200){  //状态码 代表成功
+					o.success(xhr.responseText);
+				}else{  //代表失败
+					o.error(xhr.statusText);
+				}
+			}
+		}	
+	}
+</script>
+</body>
+</html>

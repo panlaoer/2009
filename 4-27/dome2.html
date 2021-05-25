@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+<script>
+// 1
+	function Person(){
+		this.age=20;
+	}
+	Person.prototype.age=30;
+	Person.prototype.getAge=function(){
+		return this.age;
+	}
+	var p=new Person();
+	console.log(p.getAge())
+	// 2
+	function a(){
+		var i=0;
+		function b(){
+			i++;
+			console.log(i)
+		}
+		return b;
+	}
+		var c=a()
+		c()
+		c()
+		c()
+	// 3
+	var name='cat';
+	var obj={
+		name:'dog',
+		getName:function(){
+			this.name='mouse';
+			return(function(){
+				return this.name;
+			})();
+		}
+	}
+	console.log(obj.getName())
+	// 5
+	var add=(function(){
+		return function(){
+			var counter=0;
+			return(counter+=1);
+		};
+	})();
+	add()
+	add()
+	console.log(add())
+
+	// 6
+	if(!("a" in window)){
+		var a=12
+	}
+	console.log(a)
+	// 9
+	console.log(a)
+	 a='hello'
+	 function fn(){
+	 	console.log(a)
+	 	a=12
+	 }
+	 fn()
+	 console.log(a)
+
+</script>
+</body>
+</html>

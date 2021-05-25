@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>图书列表</title>
+  <style>
+    .grid {
+      margin: auto;
+      width: 530px;
+      text-align: center;
+    }
+
+    .grid table {
+      border-top: 1px solid #C2D89A;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .grid th,
+    td {
+      padding: 10;
+      border: 1px dashed #F3DCAB;
+      height: 35px;
+      line-height: 35px;
+    }
+
+    .grid th {
+      background-color: #F3DCAB;
+    }
+
+    .grid .book {
+      padding-bottom: 10px;
+      padding-top: 5px;
+      background-color: #F3DCAB;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="grid">
+      <div>
+        <h1>用户管理</h1>
+        <div class="book">
+          <div>
+            <label for="id">
+              编号：
+            </label>
+            <input type="text" id="id" v-model="userid" v-bind:disabled="status">
+            <label for="name">
+              名称：
+            </label>
+            <input type="text" id="name" v-model="username">
+            <button v-on:click="sub">提交</button>
+          </div>
+        </div>
+      </div>
+      <table id="app">
+        <thead>
+          <tr>
+            <th>UID</th>
+            <th>用户名</th>
+            <th>EMAIL</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item,k) in list" :key="item.user_id">
+            <td>{{item.user_id}}</td>
+            <td>{{item.user_name}}</td>
+            <td>{{item.email}}</td>
+            <td>
+              <a href="" v-on:click.prevent="upd(k)">修改</a>
+              <span>|</span>
+              <a href="" v-on:click.prevent="rem(k)">删除</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+<script src="../js/axios.min.js"></script>
+<script src="../js/vue.js"></script>
+<script>
+  let b = new Vue({
+    el: "#app",
+    data: {
+      userid: "",
+      username: "",
+      status: false,
+      list: []
+    },
+    methods: {
+      // 删除
+      rem(i) {
+        let uid = this.list[i].user_id
+        let _this = this
+        axios.delete(`http://localhost:3000/list/delete?uid=${uid}`).then(function (res) {
+          _this.list.splice(i, 1)
+        })
+      },
+      sub() {
+        // 日期
+        // var data = new Date()
+        // var nian = data.getFullYear()    //年
+        // var yue = data.getUTCDay() + 1   //月
+        // var ri = data.getDate()          //日
+        // var mm = `${nian}-${yue}-${ri}`
+        let _thisa = this
+        if (this.status == true) {
+          // 修改
+          //  console.log(this.bookid)
+          let id = this.bookid
+          let name = this.bookname
+
+          this.list.forEach(function (v, k) {
+            if (v.id == id) {
+              v.name = name
+            }
+          })
+        } else {
+         
+          let user_info = {
+            user_id: this.userid,
+            user_name: this.username
+          }
+          axios.post("http://localhost:3000/list/insert",user_info).then(function (res) {
+            _thisa.list.unshift(user_info)
+            _thisa.userid = ""
+            _thisa.username = ""
+
+          })
+        }
+      },
+      upd(index) {
+        // 点击修改赋值到文本框
+        var update = this.list[index]
+        this.bookid = this.list[index].id
+        this.bookname = this.list[index].name
+        this.status = true
+      }
+    },
+	//查询
+    created() {
+      let _this = this
+      let iap_url = "http://localhost:3000/list"
+      axios.get(iap_url).then(function (res) {
+        _this.list = res.data
+      })
+    }
+  })
+</script>
+
+</html>
